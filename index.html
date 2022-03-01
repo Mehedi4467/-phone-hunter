@@ -21,7 +21,7 @@
             <h1 class="text-primary">Phone Finder</h1>
             <div class="my-4 col-12 col-md-6 mx-auto d-flex gap-2">
                 <input type="text" class="form-control" id="search-input" aria-describedby="emailHelp" placeholder="Find Your Phone">
-                <button class="btn btn-primary">Search</button>
+                <button id="search-btn" class="btn btn-primary">Search</button>
             </div>
         </div>
     </header>
@@ -29,7 +29,7 @@
     <!-- main body  -->
     <main class="container">
         <!-- phone no found -->
-        <div class="d-none justify-content-center">
+        <div id="notFound" class="displayHide justify-content-center">
             <div class="col-12 col-md-6 shadow-lg mt-5 p-5">
                 <h1 class="text-warning text-center">Oops!! No phone found</h1>
             </div>
