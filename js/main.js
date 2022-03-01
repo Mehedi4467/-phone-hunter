@@ -3,22 +3,21 @@
 const loadPhoneApi = (inputValue) => {
     fetch(`https://openapi.programming-hero.com/api/phones?search=${inputValue}`)
         .then(res => res.json())
-        .then(data => displayPhoneData(data));
+        .then(data => displayPhoneData(data.data.slice(0, 20), data));
 };
 
 
-
-
 //display phone data
-const displayPhoneData = (phoneData) => {
+const displayPhoneData = (phoneData, dataStatus) => {
     const displayPhone = document.getElementById('display-phone');
-    // console.log(phoneData);
-    const data20 = phoneData.data.slice(0, 20);
-    if (phoneData.status === false) {
+    // console.log(isTrue);
+    const data = phoneData;
+    console.log(phoneData);
+    if (dataStatus.status === false) {
         displayHideShow('notFound', 'flex');
     } else {
         displayHideShow('notFound', 'none');
-        data20.forEach((phones, index) => {
+        data.forEach((phones, index) => {
             // console.log(phones);
             const div = document.createElement('div');
             div.classList.add('col-12', 'col-md-4');
@@ -45,8 +44,6 @@ const displayPhoneData = (phoneData) => {
 };
 
 
-
-
 // phone details for modal
 
 const singlePhoneDisplay = async(phoneId, index) => {
@@ -62,7 +59,7 @@ const singlePhoneDisplay = async(phoneId, index) => {
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title text-primary" id="label-${index+phone.data.brand}">${phone.data.name}</h5>
+                <h5 class="modal-title text-primary" id="label-${index+phone.data.brand}">${phone.data.name} (Brand : ${phone.data.brand})</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -139,16 +136,23 @@ searchButton.addEventListener('click', () => {
         loadPhoneApi(searchInputValue.toLowerCase());
         searchInput.value = '';
         displayHideShow('error', 'none');
+        displayHideShow('all-data', 'flex');
+
+
+        // display all  phone data 
+        const allPhoneDataBtn = document.getElementById('all-phone');
+        allPhoneDataBtn.addEventListener('click', () => {
+
+            fetch(`https://openapi.programming-hero.com/api/phones?search=${searchInputValue.toLowerCase()}`)
+                .then(res => res.json())
+                .then(data => displayPhoneData(data.data.slice(20), data));
+
+            displayHideShow('all-data', 'none');
+
+        });
+
     } else {
         displayHideShow('error', 'block');
     }
-
-});
-
-// display all  phone data 
-const allPhoneDataBtn = document.getElementById('all-phone');
-allPhoneDataBtn.addEventListener('click', () => {
-
-
 
 });
