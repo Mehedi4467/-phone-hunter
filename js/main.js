@@ -12,7 +12,7 @@ const loadPhoneApi = (inputValue) => {
 //display phone data
 const displayPhoneData = (phoneData) => {
     const displayPhone = document.getElementById('display-phone');
-
+    // console.log(phoneData);
     const data20 = phoneData.data.slice(0, 20);
     if (phoneData.status === false) {
         displayHideShow('notFound', 'flex');
@@ -53,7 +53,7 @@ const singlePhoneDisplay = async(phoneId, index) => {
     const url = `https://openapi.programming-hero.com/api/phone/${phoneId}`;
     const res = await fetch(url);
     const phone = await res.json();
-    // console.log(phone.data.mainFeatures.sensors[0]);
+    console.log(phone.data.others);
     const mainModal = document.getElementById('myModal');
 
     const div = document.createElement('div');
@@ -73,19 +73,22 @@ const singlePhoneDisplay = async(phoneId, index) => {
                     <h5><span class="text-info">${phone.data.releaseDate ? phone.data.releaseDate : 'Release Date not found'}</span></h5>
                 </div>
                     <hr>
-                <div class="text-center mt-4">
-                    <h5 class="text-primary">Main Features</h5>
-                    <p>Chip Set: <span class="text-info">${phone.data.mainFeatures.chipSet}</span> </p>
-                    <p>Display Size: <span class="text-info"> ${phone.data.mainFeatures.displaySize} </span> </p>
-                    <p>Memory: <span class="text-info"> ${phone.data.mainFeatures.memory} </span> </p>
-                    <p>Storage: <span class="text-info"> ${phone.data.mainFeatures.storage} </span> </p>
+                    <div class="p-4">
+                        <h5 class="text-primary text-center mb-2">Sensors</h5>
+                        <div id ="sensor-${index+phone.data.brand}">
+                            
+                        </div>
                 </div>
-                <div class="text-center mt-4">
-                    <h5 class="text-primary">Sensors</h5>
-                    <div id ="sensor">
-                        ${phone.data.mainFeatures.sensors.forEach(x => console.log(x))}
-                    </div>
+                <div class="p-4 mt-4">
+                    <h5 class="text-primary text-center mb-3">Other Features</h5>
+                    <p>GPS : <span class="text-info">${phone.data.others?.GPS ? phone.data.others?.GPS : 'none'}</span> </p>
+                    <p>WLAN : <span class="text-info"> ${phone.data.others?.WLAN ? phone.data.others?.WLAN : 'none'} </span> </p>
+                    <p>USB: <span class="text-info"> ${phone.data.others?.USB ? phone.data.others?.USB : 'none'} </span> </p>
+                    <p>Bluetooth: <span class="text-info"> ${phone.data.others?.Bluetooth ? phone.data.others?.Bluetooth : 'none'} </span> </p>
+                    <p>NFC: <span class="text-info"> ${phone.data.others?.NFC ? phone.data.others?.NFC: 'none'} </span> </p>
+                    <p>Radio: <span class="text-info"> ${phone.data.others?.Radio ? phone.data.others?.Radio : 'none'} </span> </p>
                 </div>
+              
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -97,23 +100,24 @@ const singlePhoneDisplay = async(phoneId, index) => {
 
     `;
     mainModal.appendChild(div);
-
-    // const sensors = phone.data.mainFeatures.sensors;
-    // const sensorDiv = document.querySelectorAll('sensor');
-    // // console.log(sensorDiv);
-    // for (const div of sensorDiv) {
-    //     const li = document.createElement('li');
-
-
-    //     for (const sensor of sensors) {
-    //         li.innerText = sensor;
-    //         div.appendChild(li);
-    //         console.log(div.appendChild(li));
-    //     }
-    // }
-
+    sensorData(index + phone.data.brand, phoneId);
 };
 
+// sensor data display 
+const sensorData = async(sensorId, slug) => {
+    const sensorMainDiv = document.getElementById('sensor-' + sensorId);
+    const url = `https://openapi.programming-hero.com/api/phone/${slug}`;
+    const res = await fetch(url);
+    const phone = await res.json();
+    const phoneSensor = phone.data.mainFeatures.sensors;
+    for (const sensor of phoneSensor) {
+        const li = document.createElement('li');
+        li.innerText = sensor;
+        sensorMainDiv.appendChild(li);
+    }
+    // console.log(sensorMainDiv);
+
+};
 
 
 // display hide and show style 
