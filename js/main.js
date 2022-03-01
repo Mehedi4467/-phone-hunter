@@ -10,15 +10,20 @@ const loadPhoneApi = (inputValue) => {
 //display phone data
 const displayPhoneData = (phoneData, dataStatus) => {
     const displayPhone = document.getElementById('display-phone');
-    // console.log(isTrue);
     const data = phoneData;
-    console.log(phoneData);
+
     if (dataStatus.status === false) {
         displayHideShow('notFound', 'flex');
+
     } else {
+
         displayHideShow('notFound', 'none');
         data.forEach((phones, index) => {
-            // console.log(phones);
+            if (index > 18) {
+                displayHideShow('all-data', 'flex');
+            } else {
+                displayHideShow('all-data', 'none');
+            }
             const div = document.createElement('div');
             div.classList.add('col-12', 'col-md-4');
             div.innerHTML = `
@@ -41,6 +46,7 @@ const displayPhoneData = (phoneData, dataStatus) => {
 
     }
     displayHideShow('spinner', 'none');
+
 };
 
 
@@ -50,7 +56,6 @@ const singlePhoneDisplay = async(phoneId, index) => {
     const url = `https://openapi.programming-hero.com/api/phone/${phoneId}`;
     const res = await fetch(url);
     const phone = await res.json();
-    console.log(phone.data.others);
     const mainModal = document.getElementById('myModal');
 
     const div = document.createElement('div');
@@ -70,12 +75,23 @@ const singlePhoneDisplay = async(phoneId, index) => {
                     <h5><span class="text-info">${phone.data.releaseDate ? phone.data.releaseDate : 'Release Date not found'}</span></h5>
                 </div>
                     <hr>
+
+                    <div class="p-4 mt-4">
+                    <h5 class="text-primary text-center mb-3">Main Features</h5>
+                    <p>Display Size : <span class="text-info">${phone.data.mainFeatures.displaySize ? phone.data.mainFeatures.displaySize : 'none'}</span> </p>
+                    <p>Chip Set : <span class="text-info"> ${phone.data.mainFeatures.chipSet ? phone.data.mainFeatures.chipSet : 'none'} </span> </p>
+                    <p>Memory: <span class="text-info"> ${phone.data.mainFeatures.memory ? phone.data.mainFeatures.memory : 'none'} </span> </p>
+                    <p>Storage: <span class="text-info"> ${phone.data.mainFeatures.storage ? phone.data.mainFeatures.storage : 'none'} </span> </p>
+                    
+                </div>
+
                     <div class="p-4">
                         <h5 class="text-primary text-center mb-2">Sensors</h5>
                         <div id ="sensor-${index+phone.data.brand}">
                             
                         </div>
-                </div>
+                    </div>
+
                 <div class="p-4 mt-4">
                     <h5 class="text-primary text-center mb-3">Other Features</h5>
                     <p>GPS : <span class="text-info">${phone.data.others?.GPS ? phone.data.others?.GPS : 'none'}</span> </p>
@@ -112,7 +128,6 @@ const sensorData = async(sensorId, slug) => {
         li.innerText = sensor;
         sensorMainDiv.appendChild(li);
     }
-    // console.log(sensorMainDiv);
 
 };
 
@@ -125,7 +140,6 @@ const displayHideShow = (divId, Style) => {
 // search button js 
 const searchButton = document.getElementById('search-btn');
 searchButton.addEventListener('click', () => {
-    // const errorMassage = document.getElementById('error');
     const searchInput = document.getElementById('search-input');
     const searchInputValue = searchInput.value;
     const displayPhoneDiv = document.getElementById('display-phone');
@@ -134,18 +148,20 @@ searchButton.addEventListener('click', () => {
         displayPhoneDiv.textContent = '';
         displayHideShow('spinner', 'flex');
         loadPhoneApi(searchInputValue.toLowerCase());
-        searchInput.value = '';
         displayHideShow('error', 'none');
-        displayHideShow('all-data', 'flex');
+
 
 
         // display all  phone data 
         const allPhoneDataBtn = document.getElementById('all-phone');
         allPhoneDataBtn.addEventListener('click', () => {
-
-            fetch(`https://openapi.programming-hero.com/api/phones?search=${searchInputValue.toLowerCase()}`)
-                .then(res => res.json())
-                .then(data => displayPhoneData(data.data.slice(20), data));
+            const moreSearchValue = searchInput;
+            if (moreSearchValue.value !== '') {
+                fetch(`https://openapi.programming-hero.com/api/phones?search=${moreSearchValue.value.toLowerCase()}`)
+                    .then(res => res.json())
+                    .then(data => displayPhoneData(data.data.slice(0, data.data.length), data, console.log(data.data.length)));
+                moreSearchValue.value = '';
+            }
 
             displayHideShow('all-data', 'none');
 
