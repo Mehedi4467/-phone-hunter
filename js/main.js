@@ -86,7 +86,7 @@ const singlePhoneDisplay = async(phoneId, index) => {
                 </div>
 
                     <div class="p-4">
-                        <h5 class="text-primary text-center mb-2">Sensors</h5>
+                        <h5 class="text-primary text-center pb-3">Sensors</h5>
                         <div id ="sensor-${index+phone.data.brand}">
                             
                         </div>
@@ -159,7 +159,7 @@ searchButton.addEventListener('click', () => {
             if (moreSearchValue.value !== '') {
                 fetch(`https://openapi.programming-hero.com/api/phones?search=${moreSearchValue.value.toLowerCase()}`)
                     .then(res => res.json())
-                    .then(data => displayPhoneData(data.data.slice(0, data.data.length), data, console.log(data.data.length)));
+                    .then(data => displayPhoneData(data.data.slice(0, data.data.length), data));
                 moreSearchValue.value = '';
             }
 
