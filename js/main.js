@@ -6,16 +6,19 @@ const loadPhoneApi = (inputValue) => {
         .then(data => displayPhoneData(data));
 };
 
+
+
+
 //display phone data
 const displayPhoneData = (phoneData) => {
     const displayPhone = document.getElementById('display-phone');
-    const allPhoneData = document.getElementById('all-phone');
 
+    const data20 = phoneData.data.slice(0, 20);
     if (phoneData.status === false) {
         displayHideShow('notFound', 'flex');
     } else {
         displayHideShow('notFound', 'none');
-        phoneData.data.forEach((phones, index) => {
+        data20.forEach((phones, index) => {
             // console.log(phones);
             const div = document.createElement('div');
             div.classList.add('col-12', 'col-md-4');
@@ -50,7 +53,7 @@ const singlePhoneDisplay = async(phoneId, index) => {
     const url = `https://openapi.programming-hero.com/api/phone/${phoneId}`;
     const res = await fetch(url);
     const phone = await res.json();
-
+    // console.log(phone.data.mainFeatures.sensors[0]);
     const mainModal = document.getElementById('myModal');
 
     const div = document.createElement('div');
@@ -64,10 +67,24 @@ const singlePhoneDisplay = async(phoneId, index) => {
             </div>
             <div class="modal-body">
                 <div class="d-flex justify-content-center align-items-center"><img class="img-fluid" src="${phone.data.image}" alt=""></div>
-                <div class="text-center mt-3">
-                    <h3 class="text-primary">iPhone 13 mini</h3>
-                    <h5>Brand : <span>Apple</span></h5>
-
+                <div class="text-center my-3">
+                    <h3 class="text-primary">${phone.data.name}</h3>
+                   
+                    <h5><span class="text-info">${phone.data.releaseDate ? phone.data.releaseDate : 'Release Date not found'}</span></h5>
+                </div>
+                    <hr>
+                <div class="text-center mt-4">
+                    <h5 class="text-primary">Main Features</h5>
+                    <p>Chip Set: <span class="text-info">${phone.data.mainFeatures.chipSet}</span> </p>
+                    <p>Display Size: <span class="text-info"> ${phone.data.mainFeatures.displaySize} </span> </p>
+                    <p>Memory: <span class="text-info"> ${phone.data.mainFeatures.memory} </span> </p>
+                    <p>Storage: <span class="text-info"> ${phone.data.mainFeatures.storage} </span> </p>
+                </div>
+                <div class="text-center mt-4">
+                    <h5 class="text-primary">Sensors</h5>
+                    <div id ="sensor">
+                        ${phone.data.mainFeatures.sensors.forEach(x => console.log(x))}
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -80,7 +97,24 @@ const singlePhoneDisplay = async(phoneId, index) => {
 
     `;
     mainModal.appendChild(div);
+
+    // const sensors = phone.data.mainFeatures.sensors;
+    // const sensorDiv = document.querySelectorAll('sensor');
+    // // console.log(sensorDiv);
+    // for (const div of sensorDiv) {
+    //     const li = document.createElement('li');
+
+
+    //     for (const sensor of sensors) {
+    //         li.innerText = sensor;
+    //         div.appendChild(li);
+    //         console.log(div.appendChild(li));
+    //     }
+    // }
+
 };
+
+
 
 // display hide and show style 
 const displayHideShow = (divId, Style) => {
@@ -104,5 +138,13 @@ searchButton.addEventListener('click', () => {
     } else {
         displayHideShow('error', 'block');
     }
+
+});
+
+// display all  phone data 
+const allPhoneDataBtn = document.getElementById('all-phone');
+allPhoneDataBtn.addEventListener('click', () => {
+
+
 
 });
